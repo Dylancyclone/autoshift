@@ -360,15 +360,21 @@ def progn(*args: _VT) -> _VT:
 
 def parse_shift_orcicorn():
     import json
-    key_url = "https://raw.githubusercontent.com/ugoogalizer/autoshift-codes/main/shiftcodes.json"
 
-
-    resp = requests.get(key_url)
-    if not resp:
-        _L.error(f"Error querying for new keys: {resp.reason}")
-        return None
-
-    data: dict = json.loads(resp.text)[0]
+    shift_codes_file = path.join(DIRNAME, "data", "shiftcodes.json")
+    if path.isfile(shift_codes_file):
+      with open(shift_codes_file, "rb") as f:
+          data: dict = json.load(f)[0]
+    else:
+      key_url = "https://raw.githubusercontent.com/ugoogalizer/autoshift-codes/main/shiftcodes.json"
+  
+  
+      resp = requests.get(key_url)
+      if not resp:
+          _L.error(f"Error querying for new keys: {resp.reason}")
+          return None
+  
+      data: dict = json.loads(resp.text)[0]
 
     if "codes" not in data:
         _L.error("Invalid response. Please contact the developer @ github.com/fabbi")
